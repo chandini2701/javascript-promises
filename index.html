@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript Promises Guide</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="hero">
+      <nav>
+        <a href="#home" class="logo">JS Promises</a>
+        <a href="#topics">Topics</a>
+        <a href="#playground">Practice</a>
+      </nav>
+
+      <div class="hero-content" id="home">
+        <p class="tag">JAVASCRIPT LEARNING GUIDE</p>
+        <h1>Understand JavaScript Promises</h1>
+        <p>
+          Learn asynchronous JavaScript, Promise states, chaining, error
+          handling, Promise methods and async/await.
+        </p>
+        <a href="#topics" class="primary-link">Start Learning</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro section">
+        <h2>1. What is a Promise?</h2>
+        <p>
+          A Promise is a JavaScript object that represents the eventual success
+          or failure of an asynchronous operation. For example, a server request
+          may take time to complete.
+        </p>
+
+        <pre><code>const myPromise = new Promise((resolve, reject) => {
+    resolve("Operation successful!");
+});
+
+myPromise.then(result => {
+    console.log(result);
+});</code></pre>
+      </section>
+
+      <section class="section">
+        <h2>2. Why Do We Need Promises?</h2>
+        <p>
+          Some operations take time, such as fetching data from a server,
+          reading a response or waiting for a timer. Promises help us handle
+          their results without blocking the main JavaScript thread.
+        </p>
+        <pre><code>console.log("Start");
+
+setTimeout(() => {
+    console.log("Operation completed");
+}, 1000);
+
+console.log("End");
+
+// Output:
+// Start
+// End
+// Operation completed</code></pre>
+      </section>
+
+      <section class="section">
+        <h2>3. Promise States</h2>
+        <div class="state-grid">
+          <article class="state-card pending">
+            <h3>Pending</h3>
+            <p>The operation has not settled yet.</p>
+          </article>
+          <article class="state-card fulfilled">
+            <h3>Fulfilled</h3>
+            <p>The operation completed successfully.</p>
+          </article>
+          <article class="state-card rejected">
+            <h3>Rejected</h3>
+            <p>The operation failed.</p>
+          </article>
+        </div>
+        <p class="note">
+          A Promise starts pending and settles as fulfilled or rejected. Once
+          settled, its state cannot change.
+        </p>
+      </section>
+
+      <section class="section" id="topics">
+        <h2>4. Promise Concepts</h2>
+
+        <article class="topic-card">
+          <h3>Creating a Promise</h3>
+          <p>
+            The Promise constructor accepts an executor function. JavaScript
+            calls it immediately with resolve and reject.
+          </p>
+          <pre><code>const task = new Promise((resolve, reject) => {
+    const success = true;
+
+    if (success) {
+        resolve("Task completed");
+    } else {
+        reject("Task failed");
+    }
+});</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>resolve() and reject()</h3>
+          <p>
+            resolve fulfills a Promise with a value. reject rejects it with a
+            reason, usually an Error object.
+          </p>
+          <pre><code>const result = new Promise((resolve, reject) => {
+    let marks = 80;
+
+    if (marks >= 35) {
+        resolve("Pass");
+    } else {
+        reject(new Error("Fail"));
+    }
+});</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>.then()</h3>
+          <p>
+            .then() registers handlers for fulfillment and optionally rejection.
+            It returns a new Promise.
+          </p>
+          <pre><code>Promise.resolve(10)
+    .then(value => {
+        return value * 2;
+    })
+    .then(result => {
+        console.log(result); // 20
+    });</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>.catch()</h3>
+          <p>
+            .catch() handles a rejection from the Promise chain. It can also
+            recover by returning a normal value.
+          </p>
+          <pre><code>Promise.reject(new Error("Something failed"))
+    .catch(error => {
+        console.log(error.message);
+        return "Recovered";
+    })
+    .then(value => console.log(value));</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>.finally()</h3>
+          <p>
+            .finally() runs after the Promise settles, whether it fulfilled or
+            rejected. It is useful for cleanup.
+          </p>
+          <pre><code>Promise.resolve("Success")
+    .finally(() => {
+        console.log("Operation finished");
+    })
+    .then(value => console.log(value));</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>Promise Chaining</h3>
+          <p>
+            Return a value or another Promise from .then() to run asynchronous
+            steps in sequence.
+          </p>
+          <pre><code>Promise.resolve(5)
+    .then(value => value + 5)
+    .then(value => value * 2)
+    .then(result => console.log(result)); // 20</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>Promise.resolve() and Promise.reject()</h3>
+          <p>
+            These static methods create fulfilled or rejected Promises.
+            Promise.resolve also adopts a Promise or thenable passed to it.
+          </p>
+          <pre><code>Promise.resolve("Hello")
+    .then(value => console.log(value));
+
+Promise.reject(new Error("Failed"))
+    .catch(error => console.log(error.message));</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>Promise.all()</h3>
+          <p>
+            Fulfills when every input fulfills. Rejects as soon as an input
+            rejects. Results preserve input order.
+          </p>
+          <pre><code>Promise.all([
+    Promise.resolve("HTML"),
+    Promise.resolve("CSS"),
+    Promise.resolve("JavaScript")
+]).then(results => console.log(results));</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>Promise.allSettled()</h3>
+          <p>
+            Waits for all input Promises to settle and returns each outcome with
+            its status.
+          </p>
+          <pre><code>Promise.allSettled([
+    Promise.resolve("Success"),
+    Promise.reject(new Error("Failed"))
+]).then(results => console.log(results));</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>Promise.race()</h3>
+          <p>
+            Settles with the outcome of the first input Promise that settles.
+          </p>
+          <pre><code>Promise.race([
+    new Promise(resolve =>
+        setTimeout(() => resolve("First"), 500)
+    ),
+    new Promise(resolve =>
+        setTimeout(() => resolve("Second"), 1000)
+    )
+]).then(result => console.log(result));</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>Promise.any()</h3>
+          <p>
+            Fulfills with the first fulfilled input. If all inputs reject, it
+            rejects with an AggregateError.
+          </p>
+          <pre><code>Promise.any([
+    Promise.reject("Failed"),
+    Promise.resolve("Success")
+]).then(result => console.log(result));</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>Async and Await</h3>
+          <p>
+            An async function always returns a Promise. Await pauses that
+            function until the Promise settles.
+          </p>
+          <pre><code>function getData() {
+    return Promise.resolve("Data received");
+}
+
+async function displayData() {
+    const result = await getData();
+    console.log(result);
+}
+
+displayData();</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>Error Handling with try...catch</h3>
+          <p>
+            Inside an async function, use try...catch to handle a rejected
+            Promise awaited with await.
+          </p>
+          <pre><code>async function loadData() {
+    try {
+        const result = await Promise.reject(
+            new Error("Unable to load data")
+        );
+        console.log(result);
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+loadData();</code></pre>
+        </article>
+
+        <article class="topic-card">
+          <h3>Callback vs Promise</h3>
+          <p>
+            Callbacks pass a function to another function. Promises provide a
+            standard way to represent an eventual result and chain asynchronous
+            steps.
+          </p>
+          <pre><code>// Callback
+setTimeout(() => {
+    console.log("Callback completed");
+}, 500);
+
+// Promise
+Promise.resolve("Promise completed")
+    .then(result => console.log(result));</code></pre>
+        </article>
+      </section>
+
+      <section class="section playground" id="playground">
+        <h2>5. Interactive Promise Playground</h2>
+        <p>
+          Click each button to run a real Promise example and see its output
+          below.
+        </p>
+
+        <div class="button-group">
+          <button onclick="runResolve()">Resolve</button>
+          <button onclick="runReject()">Reject</button>
+          <button onclick="runChain()">Chaining</button>
+          <button onclick="runFinally()">Finally</button>
+          <button onclick="runAll()">Promise.all()</button>
+          <button onclick="runAllSettled()">All Settled</button>
+          <button onclick="runRace()">Race</button>
+          <button onclick="runAny()">Any</button>
+          <button onclick="runAsyncAwait()">Async/Await</button>
+        </div>
+
+        <p id="status" class="status">Status: Ready</p>
+        <pre id="output" aria-live="polite">Click a button to start.</pre>
+      </section>
+    </main>
+
+    <footer>
+      <p>JavaScript Promises Guide | Learn, Practice and Improve</p>
+    </footer>
+  </body>
+</html>
